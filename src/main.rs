@@ -1,5 +1,7 @@
 #![allow(non_snake_case)]
 
+mod team_book;
+
 enum Niceness
 {
     NotNice,
@@ -40,4 +42,18 @@ fn main() {
     let people = [bob];
     let bobby = people[0].little(Niceness::NotNice);
     say_hello(&bobby);
+
+    let team_members = team_book::Members::new(None)
+    .update("Alice", "begin")
+    .update("Bob", "good morning");
+
+    print!("{}", team_members.get_member_status("Alice"));
+    print!("{}", team_members.get_member_status("Bob"));
+
+    let team_members = team_members
+    .update("Alice", "break")
+    .update("Bob", "exit(5)");
+
+    print!("{}", team_members.get_member_status("Alice"));
+    print!("{}", team_members.get_member_status("Bob"));
 }
