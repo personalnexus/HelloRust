@@ -20,9 +20,9 @@ pub struct Member {
 
 
 impl Member {
-    fn new() -> Self {
+    fn new(name: &str) -> Self {
         Self { 
-            name: String::new(), 
+            name: String::from(name),
             presence: Presence::Unknown, 
             last_activity: SystemTime::UNIX_EPOCH
         }
@@ -82,7 +82,7 @@ impl Members {
     }
 
     pub fn update(&mut self, name: &str, message: &str) {
-        let member = self.members_by_name.entry(String::from(name)).or_insert_with(Member::new);
+        let member = self.members_by_name.entry(String::from(name)).or_insert_with(|| { Member::new(name) });
         member.update(message);
     }
 
