@@ -20,9 +20,16 @@ pub struct Member {
 
 
 impl Member {
+    fn new() -> Self {
+        Self { 
+            name: String::new(), 
+            presence: Presence::Unknown, 
+            last_activity: SystemTime::UNIX_EPOCH
+        }
+    }
+
     fn get_status(&self) -> String {
-        let presence = match &self.presence
-        {
+        let presence = match &self.presence  {
             Presence::Unknown => "doing who knows what".to_string(),
             Presence::OutOfOffice(exit_code) => format!("gone ('{}')", exit_code),
             Presence::Working(last_message) => format!("working {})", if last_message.len() > 0 { format!("('{}')", last_message) } else { "in silence".to_string() }),
@@ -31,12 +38,9 @@ impl Member {
         format!("{} is currently {}. Last activity: {:#?}.", self.name, presence, self.last_activity)
     }
 
-    fn update(&self, name: &str, message: &str) -> Member {
-        Member { 
-            name: name.to_string(),
-            presence: self.parse_presence(message), 
-            last_activity: time::SystemTime::now()
-        }
+    fn update(&mut self, message: &str) {
+        self.presence = self.parse_presence(message);
+        self.last_activity = time::SystemTime::now();
     }
 
     fn parse_presence(&self, message: &str) -> Presence {
@@ -69,26 +73,17 @@ pub struct Members {
     members_by_name: HashMap<String, Member>
 }
 
-static EMPTY_MEMBER: Member = Member { name: String::new(), presence: Presence::Unknown, last_activity: SystemTime::UNIX_EPOCH };
-
 impl Members {
     
-    pub fn new(members_by_name: Option<HashMap<String, Member>> ) -> Self 
-    { 
+    pub fn new() -> Self { 
         Self { 
-            members_by_name: members_by_name.unwrap_or_else(HashMap::new) 
+            members_by_name: HashMap::new()
         } 
     }
 
-    pub fn update(&self, name: &str, message: &str) -> Members
-    {
-        let old_member = self.members_by_name.get(name).unwrap_or(&EMPTY_MEMBER);
-
-        let new_member = old_member.update(name, message);
-        
-        let mut new_members_by_name = self.members_by_name.clone();
-        new_members_by_name.insert(name.to_string(), new_member);
-        Members::new(Some(new_members_by_name))
+    pub fn update(&mut self, name: &str, message: &str) {
+        let member = self.members_by_name.entry(String::from(name)).or_insert_with(Member::new);
+        member.update(message);
     }
 
     pub fn get_member_status(&self, name: &str) -> String {

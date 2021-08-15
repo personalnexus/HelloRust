@@ -43,16 +43,15 @@ fn main() {
     let bobby = people[0].little(Niceness::NotNice);
     say_hello(&bobby);
 
-    let team_members = team_book::Members::new(None)
-    .update("Alice", "begin")
-    .update("Bob", "good morning");
+    let mut team_members = team_book::Members::new();
+    team_members.update("Alice", "begin");
+    team_members.update("Bob", "good morning");
 
     print!("{}", team_members.get_member_status("Alice"));
     print!("{}", team_members.get_member_status("Bob"));
 
-    let team_members = team_members
-    .update("Alice", "break")
-    .update("Bob", "exit(5)");
+    team_members.update("Alice", "break");
+    team_members.update("Bob", "exit(5)");
 
     print!("{}", team_members.get_member_status("Alice"));
     print!("{}", team_members.get_member_status("Bob"));
