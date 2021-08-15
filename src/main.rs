@@ -50,8 +50,9 @@ fn main() {
     print!("{}", team_members.get_member_status("Alice"));
     print!("{}", team_members.get_member_status("Bob"));
 
-    team_members.update("Alice", "break");
-    team_members.update("Bob", "exit(5)");
+    team_members
+    .update("Alice", "break")
+    .update("Bob", "exit(5)");
 
     print!("{}", team_members.get_member_status("Alice"));
     print!("{}", team_members.get_member_status("Bob"));

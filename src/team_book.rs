@@ -81,9 +81,10 @@ impl Members {
         } 
     }
 
-    pub fn update(&mut self, name: &str, message: &str) {
+    pub fn update(&mut self, name: &str, message: &str)  -> &mut Self {
         let member = self.members_by_name.entry(String::from(name)).or_insert_with(|| { Member::new(name) });
         member.update(message);
+        self
     }
 
     pub fn get_member_status(&self, name: &str) -> String {
